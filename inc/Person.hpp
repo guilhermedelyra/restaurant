@@ -1,6 +1,6 @@
 #ifndef PERSON_HPP
 #define PERSON_HPP
-#include "OrderedProduct.hpp"
+#include "Order.hpp"
 
 class Person{
     public:
