@@ -1,0 +1,44 @@
+1a interface:
+
+a) login
+	user: xxx
+	pass: xxx
+
+b) cadastrar funcionario
+	user: xxx
+	pass: xxx
+	tel: xxx
+
+
+2a interface:
+
+a) refeições
+	1. arroz carne feijao (15$)		2. macarrao frango feijao (17$)
+	3. stroggonof de carne (21$)
+
+b) bebidas
+	b.a) refrigerante (5$)
+		1. coca cola	2. sprite
+
+	b.b) suco (5$)
+		1. limao		2. laranja
+
+c) sobremesas
+	1. pudim (8$)		2. sorvete (4$)
+
+d) encerrar pedido [checa estoque]
+
+e) checar estoque
+
+f) loggout
+
+3a interface:
+	a) cadastrar cliente
+		nome: xxx
+		tel: xxx
+	b) pagamento cartao de credito
+		senha: xxx
+
+	c) pagamento dinheiro
+
+	d) retornar à interface 2
