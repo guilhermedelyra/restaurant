@@ -1,21 +1,27 @@
-#ifndef INC_PERSON_H
-#define INC_PERSON_H
+#ifndef PERSON_HPP
+#define PERSON_HPP
 #include "OrderedProduct.hpp"
 
 class Person{
-    protected:
-        int tel;
     public:
-        virtual void getName() = 0;
-        void getTel();
-        Person();
-        ~Person();
+        string tel;
+        virtual void getName(string & name) = 0;
+        void getTel(string & tel);
+
 };
 
 class Client : public Person{
-
-}
+    public:
+        string name;
+        Client();
+        void getName(string & n);
+};
 
 class Functionary : public Person{
-    protected
-}
+    public:
+        string user, pass;
+        Functionary();
+        void getName(string & u), getPass(string & p);
+};
+
+#endif

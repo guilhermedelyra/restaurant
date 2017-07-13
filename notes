@@ -30,7 +30,11 @@ d) encerrar pedido [checa estoque]
 
 e) checar estoque
 
-f) loggout
+f) mostrar clientes
+
+g) mostrar funcionarios
+
+h) loggout
 
 3a interface:
 	a) cadastrar cliente
