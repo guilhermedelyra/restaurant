@@ -8,8 +8,6 @@ int main(int argc, char ** argv){
 	initscr();
 	noecho();
 	cbreak();
-	int yMax, xMax;
-	getmaxyx(stdscr, yMax, xMax);
 	WINDOW * menuwin;
 	int y = 24, x = 78;
 	menuwin = newwin(y - 4 - 2, x, 1, 1);
@@ -22,8 +20,9 @@ int main(int argc, char ** argv){
 	keypad(menuwin, true);
 
 	vector<string> choices;
+	char* tis[2] = {new char[160], new char[160]};
 
-	int choice, highlight = 0, interfaces = 1, flag[200];
+	int choice, highlight = 0, interfaces = 1, flag[200], fleg[2] = {1, 1};
 	for(int i = 0; i < 200; ++i) flag[i] = 1;
 
 	while(1){
@@ -69,18 +68,13 @@ int main(int argc, char ** argv){
 			default:
 				break;
 		}
-		if(interfaces == 2){
-			string x = "", y = "";
-			int p, l = 10;
-			while((p = getch()) != '\n'){
-				x += p;
-				mvwprintw(menuwin, 1, 1, x.c_str());
-			}
-			mvwprintw(menuwin, 1, l++, "\n");
-			l = 10;
-			while((p = getch()) != '\n'){
-				y += p;
-				mvwprintw(menuwin, 2, l++, y.c_str());
+
+		if(interfaces == 2 && (highlight == 1 || highlight == 0)){
+			int p;
+			if(fleg[highlight]){
+				getstr(tis[highlight]);
+				fleg[highlight] = 0;
+				highlight++;
 			}
 		}
 		if((choice == 10 || choice == 20) && choices[highlight] == "sair"){
@@ -91,10 +85,13 @@ int main(int argc, char ** argv){
 		}
 
 	}
-
-	printw("lala %s", choices[highlight].c_str());
-	getch();
+	wclear(menuwin);
+	refresh();
+	wrefresh(menuwin);
+	printw( "Press any key to leave\n");
+	refresh();
+	getchar();
+	refresh();
 	endwin();
-
 	return 0;
 }
