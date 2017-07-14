@@ -2,7 +2,10 @@
 using namespace std;
 
 int main(){
-    string x = "1234(5$)";
-    int a = x.length() - 1, b = x.length() - 2, c = x.length() - 3;
-    cout << x[a] << x[b] << x[c] << endl;
+    int i = 0;
+    vector<int>x;
+    x.push_back(i++);
+    x.push_back(i++);
+    x.push_back(i++);
+    cout << x[0] << x[1] << x[2] << x.back();
 }
