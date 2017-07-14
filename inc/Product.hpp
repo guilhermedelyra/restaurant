@@ -3,11 +3,10 @@
 
 #include "Order.hpp"
 
-class Product : Order {
+class Product {
     public:
         string name;
         float price;
-        int id, quant;
         Product(string n, float p);
 };
 

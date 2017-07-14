@@ -86,17 +86,17 @@ int main(int argc, char ** argv){
 					highlight = 1;
 					choices.clear();
 					choices.push_back("--- Refeições ---");
-					choices.push_back("1. arroz carne feijao (15$) x 0");
-					choices.push_back("2. macarrao frango feijao (17$) x 0");
-					choices.push_back("3. stroggonof de carne (21$) x 0");
+					choices.push_back("1.  (15$) x 0");
+					choices.push_back("2.  (17$) x 0");
+					choices.push_back("3.  (21$) x 0");
 					choices.push_back("--- Bebidas ---");
-					choices.push_back("1. coca cola (5$) x 0");
-					choices.push_back("2. sprite (5$) x 0");
-					choices.push_back("3. suco de limão (5$) x 0");
-					choices.push_back("4. suco de goiaba (5$) x 0");
+					choices.push_back("1.  (5$) x 0");
+					choices.push_back("2.  (5$) x 0");
+					choices.push_back("3.  (5$) x 0");
+					choices.push_back("4.  (5$) x 0");
 					choices.push_back("--- Sobremesas ---");
-					choices.push_back("1. pudim (8$) x 0");
-					choices.push_back("2. sorvete (7$) x 0");
+					choices.push_back("1.  (8$) x 0");
+					choices.push_back("2.  (7$) x 0");
 					choices.push_back("\n");
 					choices.push_back("encerrar pedido");
 					choices.push_back("voltar");
@@ -107,7 +107,38 @@ int main(int argc, char ** argv){
 					flag[interfaces] = 0;
 				}
 				break;
-
+			case 5:
+				if(flag[interfaces]){
+					highlight = 0;
+					choices.clear();
+					choices.push_back("cadastrar cliente");
+					choices.push_back("pagamento com cartao de credito");
+					choices.push_back("pagamento em dinheiro");
+					choices.push_back("voltar");
+					choices.push_back("sair");
+					flag[interfaces] = 0;
+				}
+			case 6:
+				if(flag[interfaces]){
+					highlight = 0;
+					choices.clear();
+					choices.push_back("nome: ");
+					choices.push_back("tel: ");
+					choices.push_back("voltar");
+					choices.push_back("sair");
+					flag[interfaces] = 0;
+				}
+				break;
+			case 7:
+				if(flag[interfaces]){
+					highlight = 0;
+					choices.clear();
+					choices.push_back("senha: ");
+					choices.push_back("voltar");
+					choices.push_back("sair");
+					flag[interfaces] = 0;
+				}
+				break;
 		}
 
 		wclear(menuwin);
