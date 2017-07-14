@@ -9,9 +9,9 @@ string fto_string(float x){
     return stream.str();
 }
 string getinput(){
-	char ch;
-	string input;
-
+	char ch = getch();
+	string input = "";
+    if (ch != '\n') input += ch;
 	while (1){
 		ch = getch();
 		if (ch == '\n'){
@@ -29,24 +29,10 @@ string getinput(){
 	return input;
 }
 
-int main(){
-    vector<Client> c;
-    vector<Functionary> f;
-    vector<Product> p;
-    vector<Stock> st;
-    Order * pedido = new Order(0, "", true);
-    /*int x;
-    for(int i = 0; i < 4; ++i){
-        cin >> x;
-        if(x){
-            Functionary * tmp = new Functionary();
-            f.push_back(*tmp);
-        } else {
-            Client * tmp = new Client();
-            c.push_back(*tmp);
-        }
-    }*/
+void init_productstocks(vector<Product> & p, vector<Stock> & st){
     int l = 1;
+    p.clear(); st.clear();
+
     Product * p0 = new Product("arroz carne feijao", 15.00);
     Stock * d0 = new Stock(l++, 50, 20);
     st.push_back(*d0);
@@ -83,8 +69,22 @@ int main(){
     Stock * d8 = new Stock(l++, 15, 4);
     st.push_back(*d8);
     p.push_back(*p8);
+}
+
+int main(){
+    vector<Client> c;
+    vector<Functionary> f;
+    vector<Product> p;
+    vector<Stock> st;
+    Order * pedido = new Order(0, "", true);
+    init_productstocks(p, st);
 
     initscr();
+    raw();
+    start_color();
+    init_pair(1, COLOR_RED, COLOR_BLACK);
+    init_pair(2, COLOR_GREEN, COLOR_BLACK);
+
 	noecho();
 	cbreak();
 	WINDOW * menuwin;
@@ -99,10 +99,9 @@ int main(){
 	keypad(menuwin, true);
 
 	vector<string> choices, cpy;
-	vector< pair<string, string> > persons;
-	string tis[2], tos[3];
+	string tis[5], tos[5];
 	pair<string, string> tmp;
-	vector< pair<string, string> >::iterator it;
+
 	int choice, highlight = 0, interfaces = 1, flag[200], fleg[200], qtd[12] = {0};
 	for(int i = 0; i < 200; ++i) fleg[i] = flag[i] = 1;
 
@@ -113,8 +112,8 @@ int main(){
 					highlight = 0;
 					choices.clear();
 					choices.push_back("login");
-					choices.push_back("cadastrar funcionario");
-					choices.push_back("sair");
+					choices.push_back("register employee");
+					choices.push_back("exit");
 					flag[interfaces] = 0;
 				}
 				break;
@@ -124,7 +123,9 @@ int main(){
 					choices.clear();
 					choices.push_back("user: ");
 					choices.push_back("pass: ");
-					choices.push_back("sair");
+					choices.push_back("exit");
+                    choices.push_back("\n");
+                    choices.push_back("---- first key when filling any field is ignored ----");
 					flag[interfaces] = 0;
 				}
 				break;
@@ -132,11 +133,14 @@ int main(){
 				if(flag[interfaces]){
 					highlight = 0;
 					choices.clear();
-					choices.push_back("user: ");
-					choices.push_back("pass: ");
-					choices.push_back("tel: ");
-					choices.push_back("voltar");
-					choices.push_back("sair");
+                    choices.push_back("* name: ");
+					choices.push_back("* user: ");
+					choices.push_back("* pass: ");
+					choices.push_back("* tel: ");
+					choices.push_back("back");
+					choices.push_back("exit");
+                    choices.push_back("\n");
+                    choices.push_back("---- first key when filling any field is ignored ----");
 					flag[interfaces] = 0;
 				}
 				break;
@@ -145,19 +149,19 @@ int main(){
 					pedido->totalvalue = 0;
 					highlight = 1;
 					choices.clear();
-                    choices.push_back(to_string(st[0].id) + ". " + p[0].name + " (" + fto_string(p[0].price) + ") [" + to_string(st[0].quantity) + "] x 0");
-                    choices.push_back(to_string(st[1].id) + ". " + p[1].name + " (" + fto_string(p[1].price) + ") [" + to_string(st[1].quantity) + "] x 0");
-                    choices.push_back(to_string(st[2].id) + ". " + p[2].name + " (" + fto_string(p[2].price) + ") [" + to_string(st[2].quantity) + "] x 0");
-                    choices.push_back(to_string(st[3].id) + ". " + p[3].name + " (" + fto_string(p[3].price) + ") [" + to_string(st[3].quantity) + "] x 0");
-                    choices.push_back(to_string(st[4].id) + ". " + p[4].name + " (" + fto_string(p[4].price) + ") [" + to_string(st[4].quantity) + "] x 0");
-                    choices.push_back(to_string(st[5].id) + ". " + p[5].name + " (" + fto_string(p[5].price) + ") [" + to_string(st[5].quantity) + "] x 0");
-                    choices.push_back(to_string(st[6].id) + ". " + p[6].name + " (" + fto_string(p[6].price) + ") [" + to_string(st[6].quantity) + "] x 0");
-                    choices.push_back(to_string(st[7].id) + ". " + p[7].name + " (" + fto_string(p[7].price) + ") [" + to_string(st[7].quantity) + "] x 0");
-                    choices.push_back(to_string(st[8].id) + ". " + p[8].name + " (" + fto_string(p[8].price) + ") [" + to_string(st[8].quantity) + "] x 0");
+                    choices.push_back(to_string(st[0].id) + ". " + p[0].name + " (" + fto_string(p[0].price) + "$) [" + to_string(st[0].quantity) + "] x 0");
+                    choices.push_back(to_string(st[1].id) + ". " + p[1].name + " (" + fto_string(p[1].price) + "$) [" + to_string(st[1].quantity) + "] x 0");
+                    choices.push_back(to_string(st[2].id) + ". " + p[2].name + " (" + fto_string(p[2].price) + "$) [" + to_string(st[2].quantity) + "] x 0");
+                    choices.push_back(to_string(st[3].id) + ". " + p[3].name + " (" + fto_string(p[3].price) + "$) [" + to_string(st[3].quantity) + "] x 0");
+                    choices.push_back(to_string(st[4].id) + ". " + p[4].name + " (" + fto_string(p[4].price) + "$) [" + to_string(st[4].quantity) + "] x 0");
+                    choices.push_back(to_string(st[5].id) + ". " + p[5].name + " (" + fto_string(p[5].price) + "$) [" + to_string(st[5].quantity) + "] x 0");
+                    choices.push_back(to_string(st[6].id) + ". " + p[6].name + " (" + fto_string(p[6].price) + "$) [" + to_string(st[6].quantity) + "] x 0");
+                    choices.push_back(to_string(st[7].id) + ". " + p[7].name + " (" + fto_string(p[7].price) + "$) [" + to_string(st[7].quantity) + "] x 0");
+                    choices.push_back(to_string(st[8].id) + ". " + p[8].name + " (" + fto_string(p[8].price) + "$) [" + to_string(st[8].quantity) + "] x 0");
 					choices.push_back("\n");
-					choices.push_back("encerrar pedido");
-					choices.push_back("voltar");
-					choices.push_back("sair");
+					choices.push_back("close order");
+					choices.push_back("back");
+					choices.push_back("exit");
 					choices.push_back("\n");
 					choices.push_back("                               total = 0");
 					cpy = choices;
@@ -168,21 +172,22 @@ int main(){
 				if(flag[interfaces]){
 					highlight = 0;
 					choices.clear();
-					choices.push_back("cadastrar cliente");
-					choices.push_back("pagamento com cartao de credito");
-					choices.push_back("pagamento em dinheiro");
-					choices.push_back("voltar");
-					choices.push_back("sair");
+					choices.push_back("register client");
+                    choices.push_back("add observation");
+					choices.push_back("credit card payment");
+					choices.push_back("cash payment");
+					choices.push_back("back");
+					choices.push_back("exit");
 					flag[interfaces] = 0;
 				}
 			case 6:
 				if(flag[interfaces]){
 					highlight = 0;
 					choices.clear();
-					choices.push_back("nome: ");
+					choices.push_back("name: ");
 					choices.push_back("tel: ");
-					choices.push_back("voltar");
-					choices.push_back("sair");
+					choices.push_back("back");
+					choices.push_back("exit");
 					flag[interfaces] = 0;
 				}
 				break;
@@ -190,9 +195,9 @@ int main(){
 				if(flag[interfaces]){
 					highlight = 0;
 					choices.clear();
-					choices.push_back("senha: ");
-					choices.push_back("voltar");
-					choices.push_back("sair");
+					choices.push_back("pass: ");
+					choices.push_back("back");
+					choices.push_back("exit");
 					flag[interfaces] = 0;
 				}
 				break;
@@ -205,8 +210,20 @@ int main(){
 
 		for(int i = 0; i < (int)choices.size(); ++i){
 			if(i == highlight && choices[i][0] != '-') wattron(menuwin, A_REVERSE);
+            if(interfaces == 4){
+                if(i < 9){
+                    if(st[i].quantity <= st[i].min_amount) wattron(menuwin, COLOR_PAIR(1));
+                    else wattron(menuwin, COLOR_PAIR(2));
+                }
+            }
 			mvwprintw(menuwin, i+1, 1, choices[i].c_str());
 			wattroff(menuwin, A_REVERSE);
+            if(interfaces == 4){
+                if(i < 9){
+                    if(st[i].quantity <= st[i].min_amount) wattroff(menuwin, COLOR_PAIR(1));
+                    else wattroff(menuwin, COLOR_PAIR(2));
+                }
+            }
 		}
 
 		choice = wgetch(menuwin);
@@ -233,17 +250,21 @@ int main(){
 			if(highlight == 2 && ok == false){
 				tmp = make_pair(tos[0], tos[1]);
 				ok = true;
-				it = find (persons.begin(), persons.end(), tmp);
-			    if(it != persons.end()){
+                bool fleger = false;
+				for(int i = 0; i < (int)f.size(); ++i){
+                    if(f[i].employee == tmp) fleger = true;
+                }
+			    if(fleger){
 					interfaces = 4;
 					for(int i = 0; i < 200; ++i) fleg[i] = 1;
+
 				} else {
 					for(int i = 0; i < 200; ++i) fleg[i] = flag[i] = 1;
 					interfaces = 1;
 					wclear(menuwin);
 					refresh();
 					wrefresh(menuwin);
-					printw("senha/usuario ou incorretos\n(pressione qualquer tecla para voltar)");
+					printw("user/pass incorrects\n(press any key to go back)");
 					refresh();
 					getchar();
 					wclear(menuwin);
@@ -253,16 +274,26 @@ int main(){
 			}
 		}
 
-		if(interfaces == 3 && (highlight == 2 || highlight == 1 || highlight == 0)){
+		if(interfaces == 3 && choices[highlight][0] == '*'){
 			bool ok = false;
 			if(fleg[highlight]){
 				tis[highlight] = getinput();
 				fleg[highlight] = 0;
 				highlight++;
 			}
-			if(highlight == 3 && ok == false){
-				persons.push_back(make_pair(tis[0], tis[1]));
+			if(highlight == 4 && ok == false){
+                Functionary * temp = new Functionary(tis[0], tis[1], tis[2], tis[3]);
+                f.push_back(*temp);
 				for(int i = 0; i < 200; ++i) fleg[i] = flag[i] = 1;
+                wclear(menuwin);
+                refresh();
+                wrefresh(menuwin);
+                printw("name: %s\nuser: %s\npass: %s\ntel: %s\n(press any key to go back)", tis[0].c_str(), tis[1].c_str(), tis[2].c_str(), tis[3].c_str());
+                refresh();
+                getchar();
+                wclear(menuwin);
+                clear();
+                refresh();
 				interfaces = 1;
 				ok = true;
 			}
@@ -287,18 +318,22 @@ int main(){
             choices[highlight] = (cpy[highlight].substr(0, cpy[highlight].size()-7)) + to_string(st[highlight].quantity) + "] x " + to_string(qtd[highlight]);
 		}
 
-		if((choice == 10) && choices[highlight] == "sair"){
+		if((choice == 10) && choices[highlight] == "exit"){
 			break;
 		}
-		if((choice == 10) && choices[highlight] == "voltar"){
+		if((choice == 10) && choices[highlight] == "back"){
 			for(int i = 0; i < 200; ++i) fleg[i] = flag[i] = 1;
+
 			interfaces = 1;
 		}
 		if((choice == 10) && choices[highlight] == "login"){
 			interfaces = 2;
 		}
-		if((choice == 10) && choices[highlight] == "cadastrar funcionario"){
+        if((choice == 10) && choices[highlight] == "register employee"){
 			interfaces = 3;
+		}
+        if((choice == 10) && choices[highlight] == "close order"){
+			interfaces = 5;
 		}
 
 	}

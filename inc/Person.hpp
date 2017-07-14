@@ -5,23 +5,17 @@
 class Person{
     public:
         string name, tel;
-        virtual void getName(string & name) = 0;
-        void getTel(string & tel);
-
 };
 
 class Client : public Person{
     public:
-        Client();
-        void getName(string & n);
+        Client(string n, string t);
 };
 
 class Functionary : public Person{
     public:
         pair<string, string> employee;
-        // user, password
-        Functionary();
-        void getUP(string & u, string & p);
+        Functionary(string n, string u, string p, string t);
 };
 
 #endif
