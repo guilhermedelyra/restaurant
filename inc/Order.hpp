@@ -5,10 +5,11 @@ using namespace std;
 
 class Order {
     public:
+        float daily_balance;
         float totalvalue;
         string observation;
         bool ok = true;
-        Order(float t, string o, bool x);
+        Order(float d, float t, string o, bool x);
 };
 
 #endif

@@ -17,11 +17,7 @@ string getinput(){
 		if (ch == '\n'){
 			break;
 		}
-		if (ch == '\a' || ch == '\b'){
-			if (!input.empty()){
-				input.pop_back();
-			}
-		} else {
+		if (ch >= 33 && ch <= 122){
 			input.push_back(ch);
 		}
 	}
@@ -75,8 +71,8 @@ int main(){
     vector<Client> c;
     vector<Functionary> f;
     vector<Product> p;
-    vector<Stock> st;
-    Order * pedido = new Order(0, "", true);
+    vector<Stock> st, cp_st;
+    Order * pedido = new Order(0, 0, "", false);
     init_productstocks(p, st);
 
     initscr();
@@ -103,6 +99,7 @@ int main(){
 	pair<string, string> tmp;
 
 	int choice, highlight = 0, interfaces = 1, flag[200], fleg[200], qtd[12] = {0};
+    bool logged = false;
 	for(int i = 0; i < 200; ++i) fleg[i] = flag[i] = 1;
 
 	while(1){
@@ -133,6 +130,7 @@ int main(){
 				if(flag[interfaces]){
 					highlight = 0;
 					choices.clear();
+                    logged = true;
                     choices.push_back("* name: ");
 					choices.push_back("* user: ");
 					choices.push_back("* pass: ");
@@ -160,11 +158,12 @@ int main(){
                     choices.push_back(to_string(st[8].id) + ". " + p[8].name + " (" + fto_string(p[8].price) + "$) [" + to_string(st[8].quantity) + "] x 0");
 					choices.push_back("\n");
 					choices.push_back("close order");
-					choices.push_back("back");
+                    choices.push_back("back");
 					choices.push_back("exit");
 					choices.push_back("\n");
 					choices.push_back("                               total = 0");
 					cpy = choices;
+                    cp_st = st;
 					flag[interfaces] = 0;
 				}
 				break;
@@ -184,8 +183,8 @@ int main(){
 				if(flag[interfaces]){
 					highlight = 0;
 					choices.clear();
-					choices.push_back("name: ");
-					choices.push_back("tel: ");
+					choices.push_back("* name: ");
+					choices.push_back("* tel: ");
 					choices.push_back("back");
 					choices.push_back("exit");
 					flag[interfaces] = 0;
@@ -195,12 +194,33 @@ int main(){
 				if(flag[interfaces]){
 					highlight = 0;
 					choices.clear();
-					choices.push_back("pass: ");
+					choices.push_back("observation: ");
 					choices.push_back("back");
 					choices.push_back("exit");
 					flag[interfaces] = 0;
 				}
 				break;
+            case 8:
+                if(flag[interfaces]){
+                    highlight = 0;
+                    choices.clear();
+                    choices.push_back("pass: ");
+                    choices.push_back("back");
+                    choices.push_back("exit");
+                    flag[interfaces] = 0;
+                }
+                break;
+            case 9:
+                if(flag[interfaces]){
+                    highlight = 0;
+                    choices.clear();
+                    pedido->ok = true;
+                    choices.push_back("order closed!\ndaily balance: " + fto_string(pedido->daily_balance));
+                    choices.push_back("back");
+                    choices.push_back("exit");
+                    flag[interfaces] = 0;
+                }
+                break;
 		}
 
 		wclear(menuwin);
@@ -264,7 +284,9 @@ int main(){
 					wclear(menuwin);
 					refresh();
 					wrefresh(menuwin);
+                    attron(COLOR_PAIR(1));
 					printw("user/pass incorrects\n(press any key to go back)");
+                    attroff(COLOR_PAIR(1));
 					refresh();
 					getchar();
 					wclear(menuwin);
@@ -317,14 +339,48 @@ int main(){
 			choices.back() = "                               total = " + fto_string(pedido->totalvalue) + "$";
             choices[highlight] = (cpy[highlight].substr(0, cpy[highlight].size()-7)) + to_string(st[highlight].quantity) + "] x " + to_string(qtd[highlight]);
 		}
-
+        if(interfaces == 6 && choices[highlight][0] == '*'){
+			bool ok = false;
+			if(fleg[highlight]){
+				tis[highlight] = getinput();
+				fleg[highlight] = 0;
+				highlight++;
+			}
+			if(highlight == 4 && ok == false){
+                Client * temp = new Client(tis[0], tis[1]);
+                c.push_back(*temp);
+				for(int i = 0; i < 200; ++i) fleg[i] = flag[i] = 1;
+                wclear(menuwin);
+                refresh();
+                wrefresh(menuwin);
+                printw("name: %s\ntel: %s\n(press any key to go back)", tis[0].c_str(), tis[1].c_str());
+                refresh();
+                getchar();
+                wclear(menuwin);
+                clear();
+                refresh();
+				interfaces = 1;
+				ok = true;
+			}
+		}
 		if((choice == 10) && choices[highlight] == "exit"){
 			break;
 		}
 		if((choice == 10) && choices[highlight] == "back"){
 			for(int i = 0; i < 200; ++i) fleg[i] = flag[i] = 1;
-
-			interfaces = 1;
+            if(!pedido->ok) {
+                st = cp_st;
+                memset(qtd, 0, sizeof(qtd));
+                pedido->totalvalue = 0;
+            }
+            if(logged){
+                if(interfaces == 4){
+                    logged = false;
+                    interfaces = 1;
+                }
+                if(interfaces == 5 || interfaces == 9) interfaces = 4;
+                if(interfaces > 5 && interfaces != 9) interfaces = 5;
+            }
 		}
 		if((choice == 10) && choices[highlight] == "login"){
 			interfaces = 2;
@@ -334,6 +390,9 @@ int main(){
 		}
         if((choice == 10) && choices[highlight] == "close order"){
 			interfaces = 5;
+		}
+        if((choice == 10) && choices[highlight] == "register client"){
+			interfaces = 6;
 		}
 
 	}
