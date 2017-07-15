@@ -72,7 +72,9 @@ int main(){
     vector<Functionary> f;
     vector<Product> p;
     vector<Stock> st, cp_st;
+    vector<Order> orders;
     Order * pedido = new Order(0, 0, "", false);
+    orders.push_back(* pedido);
     init_productstocks(p, st);
 
     initscr();
@@ -80,6 +82,7 @@ int main(){
     start_color();
     init_pair(1, COLOR_RED, COLOR_BLACK);
     init_pair(2, COLOR_GREEN, COLOR_BLACK);
+    init_pair(3, COLOR_WHITE, COLOR_BLACK);
 
 	noecho();
 	cbreak();
@@ -144,8 +147,8 @@ int main(){
 				break;
 			case 4:
 				if(flag[interfaces]){
-					pedido->totalvalue = 0;
-					highlight = 1;
+					(orders.back()).totalvalue = 0;
+					highlight = 0;
 					choices.clear();
                     choices.push_back(to_string(st[0].id) + ". " + p[0].name + " (" + fto_string(p[0].price) + "$) [" + to_string(st[0].quantity) + "] x 0");
                     choices.push_back(to_string(st[1].id) + ". " + p[1].name + " (" + fto_string(p[1].price) + "$) [" + to_string(st[1].quantity) + "] x 0");
@@ -187,6 +190,8 @@ int main(){
 					choices.push_back("* tel: ");
 					choices.push_back("back");
 					choices.push_back("exit");
+                    choices.push_back("\n");
+                    choices.push_back("---- first key when filling any field is ignored ----");
 					flag[interfaces] = 0;
 				}
 				break;
@@ -194,7 +199,7 @@ int main(){
 				if(flag[interfaces]){
 					highlight = 0;
 					choices.clear();
-					choices.push_back("observation: ");
+					choices.push_back("* observation: ");
 					choices.push_back("back");
 					choices.push_back("exit");
 					flag[interfaces] = 0;
@@ -204,7 +209,7 @@ int main(){
                 if(flag[interfaces]){
                     highlight = 0;
                     choices.clear();
-                    choices.push_back("pass: ");
+                    choices.push_back("* pass: ");
                     choices.push_back("back");
                     choices.push_back("exit");
                     flag[interfaces] = 0;
@@ -212,10 +217,16 @@ int main(){
                 break;
             case 9:
                 if(flag[interfaces]){
-                    highlight = 0;
+                    highlight = 5;
                     choices.clear();
-                    pedido->ok = true;
-                    choices.push_back("order closed!\ndaily balance: " + fto_string(pedido->daily_balance));
+                    (orders.back()).ok = true;
+                    (orders.back()).daily_balance += (orders.back()).totalvalue;
+                    choices.push_back("order closed!");
+                    choices.push_back("total = " + fto_string((orders.back()).totalvalue));
+                    choices.push_back("observation = " + (orders.back()).observation);
+                    choices.push_back("\n");
+                    choices.push_back("daily balance: " + fto_string((orders.back()).daily_balance));
+                    orders.push_back(* pedido);
                     choices.push_back("back");
                     choices.push_back("exit");
                     flag[interfaces] = 0;
@@ -229,7 +240,7 @@ int main(){
 		wrefresh(menuwin);
 
 		for(int i = 0; i < (int)choices.size(); ++i){
-			if(i == highlight && choices[i][0] != '-') wattron(menuwin, A_REVERSE);
+			if(i == highlight) wattron(menuwin, A_REVERSE);
             if(interfaces == 4){
                 if(i < 9){
                     if(st[i].quantity <= st[i].min_amount) wattron(menuwin, COLOR_PAIR(1));
@@ -263,7 +274,8 @@ int main(){
 		if(interfaces == 2 && (highlight == 1 || highlight == 0)){
 			bool ok = false;
 			if(fleg[highlight]){
-				tos[highlight] = getinput();
+                tos[highlight] = "";
+                tos[highlight] = getinput();
 				fleg[highlight] = 0;
 				highlight++;
 			}
@@ -272,7 +284,7 @@ int main(){
 				ok = true;
                 bool fleger = false;
 				for(int i = 0; i < (int)f.size(); ++i){
-                    if(f[i].employee == tmp) fleger = true;
+                    if(f[i].employee.first == tmp.first && f[i].employee.second == tmp.second) fleger = true;
                 }
 			    if(fleger){
 					interfaces = 4;
@@ -284,9 +296,9 @@ int main(){
 					wclear(menuwin);
 					refresh();
 					wrefresh(menuwin);
-                    attron(COLOR_PAIR(1));
-					printw("user/pass incorrects\n(press any key to go back)");
-                    attroff(COLOR_PAIR(1));
+                    attron(COLOR_PAIR(3));
+					printw("user and/or password incorrect(s)\n(press any key to go back)");
+                    attroff(COLOR_PAIR(3));
 					refresh();
 					getchar();
 					wclear(menuwin);
@@ -299,6 +311,7 @@ int main(){
 		if(interfaces == 3 && choices[highlight][0] == '*'){
 			bool ok = false;
 			if(fleg[highlight]){
+                tis[highlight] = "";
 				tis[highlight] = getinput();
 				fleg[highlight] = 0;
 				highlight++;
@@ -310,7 +323,9 @@ int main(){
                 wclear(menuwin);
                 refresh();
                 wrefresh(menuwin);
+                attron(COLOR_PAIR(3));
                 printw("name: %s\nuser: %s\npass: %s\ntel: %s\n(press any key to go back)", tis[0].c_str(), tis[1].c_str(), tis[2].c_str(), tis[3].c_str());
+                attroff(COLOR_PAIR(3));
                 refresh();
                 getchar();
                 wclear(menuwin);
@@ -323,55 +338,111 @@ int main(){
 
 		if((choice == '\n') && interfaces == 4 && (choices[highlight][0] - '0' >= 0 && choices[highlight][0] - '0' <= 9)){
 			if(st[highlight].quantity > 0){
-                pedido->totalvalue += p[highlight].price;
+                (orders.back()).totalvalue += p[highlight].price;
                 qtd[highlight]++;
                 st[highlight].quantity--;
             }
-			choices.back() = "                               total = " + fto_string(pedido->totalvalue) + "$";
+			choices.back() = "                               total = " + fto_string((orders.back()).totalvalue) + "$";
 			choices[highlight] = (cpy[highlight].substr(0, cpy[highlight].size()-7)) + to_string(st[highlight].quantity) + "] x " + to_string(qtd[highlight]);
 		}
 		if((choice == 'R' || choice == 'r') && interfaces == 4 && (choices[highlight][0] - '0' >= 0 && choices[highlight][0] - '0' <= 9)){
 			if(qtd[highlight] - 1 >= 0){
                 qtd[highlight]--;
                 st[highlight].quantity++;
-                pedido->totalvalue -= p[highlight].price;
+                (orders.back()).totalvalue -= p[highlight].price;
             }
-			choices.back() = "                               total = " + fto_string(pedido->totalvalue) + "$";
+			choices.back() = "                               total = " + fto_string((orders.back()).totalvalue) + "$";
             choices[highlight] = (cpy[highlight].substr(0, cpy[highlight].size()-7)) + to_string(st[highlight].quantity) + "] x " + to_string(qtd[highlight]);
 		}
         if(interfaces == 6 && choices[highlight][0] == '*'){
 			bool ok = false;
 			if(fleg[highlight]){
-				tis[highlight] = getinput();
+                tos[highlight] = "";
+				tos[highlight] = getinput();
 				fleg[highlight] = 0;
 				highlight++;
 			}
-			if(highlight == 4 && ok == false){
-                Client * temp = new Client(tis[0], tis[1]);
-                c.push_back(*temp);
+			if(highlight >= 2 && ok == false){
+                Client * cemp = new Client(tos[0], tos[1]);
+                c.push_back(*cemp);
 				for(int i = 0; i < 200; ++i) fleg[i] = flag[i] = 1;
                 wclear(menuwin);
                 refresh();
                 wrefresh(menuwin);
-                printw("name: %s\ntel: %s\n(press any key to go back)", tis[0].c_str(), tis[1].c_str());
+                attron(COLOR_PAIR(3));
+                printw("name: %s\nuser: %s\n(press any key to go back)", tos[0].c_str(), tos[1].c_str());
+                attroff(COLOR_PAIR(3));
                 refresh();
                 getchar();
                 wclear(menuwin);
                 clear();
                 refresh();
-				interfaces = 1;
+				interfaces = 5;
 				ok = true;
 			}
 		}
+        if(interfaces == 7 && choices[highlight][0] == '*'){
+            bool ok = false;
+			if(fleg[highlight]){
+                tos[highlight] = "";
+                tos[highlight] = getinput();
+				fleg[highlight] = 0;
+				highlight++;
+			}
+			if(highlight == 1 && ok == false){
+                (orders.back()).observation = tos[0];
+				for(int i = 0; i < 200; ++i) fleg[i] = flag[i] = 1;
+                wclear(menuwin);
+                refresh();
+                wrefresh(menuwin);
+                attron(COLOR_PAIR(3));
+                printw("observation: %s\n(press any key to go back)", tos[0].c_str());
+                attroff(COLOR_PAIR(3));
+                refresh();
+                getchar();
+                wclear(menuwin);
+                clear();
+                refresh();
+				interfaces = 5;
+				ok = true;
+			}
+        }
+        if(interfaces == 8 && choices[highlight][0] == '*'){
+            bool ok = false;
+			if(fleg[highlight]){
+                tos[highlight] = "";
+                tos[highlight] = getinput();
+				fleg[highlight] = 0;
+				highlight++;
+			}
+			if(highlight == 1 && ok == false){
+                (orders.back()).observation = tos[0];
+				for(int i = 0; i < 200; ++i) fleg[i] = flag[i] = 1;
+                wclear(menuwin);
+                refresh();
+                wrefresh(menuwin);
+                attron(COLOR_PAIR(3));
+                printw("correct password\nplease take out the card\n");
+                attroff(COLOR_PAIR(3));
+                refresh();
+                getchar();
+                wclear(menuwin);
+                clear();
+                refresh();
+				interfaces = 9;
+				ok = true;
+			}
+        }
+
 		if((choice == 10) && choices[highlight] == "exit"){
 			break;
 		}
 		if((choice == 10) && choices[highlight] == "back"){
 			for(int i = 0; i < 200; ++i) fleg[i] = flag[i] = 1;
-            if(!pedido->ok) {
+            if(!(orders.back()).ok && interfaces <= 5) {
                 st = cp_st;
                 memset(qtd, 0, sizeof(qtd));
-                pedido->totalvalue = 0;
+                (orders.back()).totalvalue = 0;
             }
             if(logged){
                 if(interfaces == 4){
@@ -394,13 +465,23 @@ int main(){
         if((choice == 10) && choices[highlight] == "register client"){
 			interfaces = 6;
 		}
-
+        if((choice == 10) && choices[highlight] == "add observation"){
+			interfaces = 7;
+		}
+        if((choice == 10) && choices[highlight] == "credit card payment"){
+            interfaces = 8;
+        }
+        if((choice == 10) && choices[highlight] == "cash payment"){
+            interfaces = 9;
+        }
 	}
 	wclear(menuwin);
 	refresh();
 	wrefresh(menuwin);
-	printw("press any key to leave");
-	refresh();
+    attron(COLOR_PAIR(3));
+    printw("press any key to leave");
+    attroff(COLOR_PAIR(3));
+    refresh();
 	getchar();
 	refresh();
 	endwin();
