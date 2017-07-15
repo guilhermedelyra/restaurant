@@ -14,6 +14,12 @@ make
 bin/saida
 ```
 
+## Tutorial
+    [↓] e [↑] para se movimentar no menu
+    [enter] para selecionar menu
+    [r] para remover produto do "carrinho" (antes de encerrar pedido)
+    * lembrar que, ao inserir algum input quando solicitado, o primeiro caracter (de cada input) é desprezado
+
 ## Informações
 Este é um trabalho para a disciplina Orientação à Objetos, com aulas ministradas na Faculdade Gama - UnB pelo professor Renato Coral.
 
