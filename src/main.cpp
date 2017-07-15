@@ -73,7 +73,7 @@ int main(){
     vector<Product> p;
     vector<Stock> st, cp_st;
     vector<Order> orders;
-    Order * pedido = new Order(0, 0, "", false);
+    Order * pedido = new Order(0, "", false);
     orders.push_back(* pedido);
     init_productstocks(p, st);
 
@@ -102,6 +102,7 @@ int main(){
 	pair<string, string> tmp;
 
 	int choice, highlight = 0, interfaces = 1, flag[200], fleg[200], qtd[12] = {0};
+    float daily_balance = 0;
     bool logged = false;
 	for(int i = 0; i < 200; ++i) fleg[i] = flag[i] = 1;
 
@@ -150,15 +151,15 @@ int main(){
 					(orders.back()).totalvalue = 0;
 					highlight = 0;
 					choices.clear();
-                    choices.push_back(to_string(st[0].id) + ". " + p[0].name + " (" + fto_string(p[0].price) + "$) [" + to_string(st[0].quantity) + "] x 0");
-                    choices.push_back(to_string(st[1].id) + ". " + p[1].name + " (" + fto_string(p[1].price) + "$) [" + to_string(st[1].quantity) + "] x 0");
-                    choices.push_back(to_string(st[2].id) + ". " + p[2].name + " (" + fto_string(p[2].price) + "$) [" + to_string(st[2].quantity) + "] x 0");
-                    choices.push_back(to_string(st[3].id) + ". " + p[3].name + " (" + fto_string(p[3].price) + "$) [" + to_string(st[3].quantity) + "] x 0");
-                    choices.push_back(to_string(st[4].id) + ". " + p[4].name + " (" + fto_string(p[4].price) + "$) [" + to_string(st[4].quantity) + "] x 0");
-                    choices.push_back(to_string(st[5].id) + ". " + p[5].name + " (" + fto_string(p[5].price) + "$) [" + to_string(st[5].quantity) + "] x 0");
-                    choices.push_back(to_string(st[6].id) + ". " + p[6].name + " (" + fto_string(p[6].price) + "$) [" + to_string(st[6].quantity) + "] x 0");
-                    choices.push_back(to_string(st[7].id) + ". " + p[7].name + " (" + fto_string(p[7].price) + "$) [" + to_string(st[7].quantity) + "] x 0");
-                    choices.push_back(to_string(st[8].id) + ". " + p[8].name + " (" + fto_string(p[8].price) + "$) [" + to_string(st[8].quantity) + "] x 0");
+                    choices.push_back(to_string(st[0].id) + ". " + p[0].name + "      (" + fto_string(p[0].price) + "$) [" + to_string(st[0].quantity) + "] x 0");
+                    choices.push_back(to_string(st[1].id) + ". " + p[1].name + "  (" + fto_string(p[1].price) + "$) [" + to_string(st[1].quantity) + "] x 0");
+                    choices.push_back(to_string(st[2].id) + ". " + p[2].name + "     (" + fto_string(p[2].price) + "$) [" + to_string(st[2].quantity) + "] x 0");
+                    choices.push_back(to_string(st[3].id) + ". " + p[3].name + "               (" + fto_string(p[3].price) + "$)  [" + to_string(st[3].quantity) + "] x 0");
+                    choices.push_back(to_string(st[4].id) + ". " + p[4].name + "                  (" + fto_string(p[4].price) + "$)  [" + to_string(st[4].quantity) + "] x 0");
+                    choices.push_back(to_string(st[5].id) + ". " + p[5].name + "           (" + fto_string(p[5].price) + "$)  [" + to_string(st[5].quantity) + "] x 0");
+                    choices.push_back(to_string(st[6].id) + ". " + p[6].name + "         (" + fto_string(p[6].price) + "$)  [" + to_string(st[6].quantity) + "] x 0");
+                    choices.push_back(to_string(st[7].id) + ". " + p[7].name + "                   (" + fto_string(p[7].price) + "$)  [" + to_string(st[7].quantity) + "] x 0");
+                    choices.push_back(to_string(st[8].id) + ". " + p[8].name + "                 (" + fto_string(p[8].price) + "$)  [" + to_string(st[8].quantity) + "] x 0");
 					choices.push_back("\n");
 					choices.push_back("close order");
                     choices.push_back("back");
@@ -217,21 +218,77 @@ int main(){
                 break;
             case 9:
                 if(flag[interfaces]){
-                    highlight = 5;
+                    highlight = 6;
                     choices.clear();
                     (orders.back()).ok = true;
-                    (orders.back()).daily_balance += (orders.back()).totalvalue;
+                    daily_balance += (orders.back()).totalvalue;
                     choices.push_back("order closed!");
                     choices.push_back("total = " + fto_string((orders.back()).totalvalue));
                     choices.push_back("observation = " + (orders.back()).observation);
                     choices.push_back("\n");
-                    choices.push_back("daily balance: " + fto_string((orders.back()).daily_balance));
+                    choices.push_back("--- daily balance: " + fto_string(daily_balance) + " ---");
                     orders.push_back(* pedido);
+                    choices.push_back("\n");
                     choices.push_back("back");
                     choices.push_back("exit");
                     flag[interfaces] = 0;
                 }
                 break;
+            case 10:
+                if(flag[interfaces]){
+                    highlight = 2;
+                    choices.clear();
+                    choices.push_back("name: " + c.back().name);
+                    choices.push_back("tel: " + c.back().tel);
+                    choices.push_back("back");
+                    flag[interfaces] = 0;
+                }
+                break;
+
+            case 11:
+                if(flag[interfaces]){
+                    highlight = 1;
+                    choices.clear();
+                    choices.push_back("observation: " + orders.back().observation);
+                    choices.push_back("back");
+                    flag[interfaces] = 0;
+                }
+                break;
+            case 12:
+                if(flag[interfaces]){
+                    highlight = 1;
+                    choices.clear();
+                    choices.push_back("user and/or password incorrect(s)");
+                    choices.push_back("retry");
+                    flag[interfaces] = 0;
+                }
+                break;
+            case 13:
+                if(flag[interfaces]){
+                    highlight = 2;
+                    choices.clear();
+                    choices.push_back("password correct!");
+                    choices.push_back("please take out the card.");
+                    choices.push_back("proceed");
+                    flag[interfaces] = 0;
+                }
+                break;
+
+            case 14:
+                if(flag[interfaces]){
+                    highlight = 5;
+                    choices.clear();
+                    choices.push_back("name: " + f.back().name);
+                    choices.push_back("user: " + f.back().employee.first);
+                    choices.push_back("password: " + f.back().employee.second);
+                    choices.push_back("tel: " + f.back().tel);
+                    choices.push_back("\n");
+                    choices.push_back("register");
+                    choices.push_back("cancel");
+                    flag[interfaces] = 0;
+                }
+                break;
+
 		}
 
 		wclear(menuwin);
@@ -292,18 +349,7 @@ int main(){
 
 				} else {
 					for(int i = 0; i < 200; ++i) fleg[i] = flag[i] = 1;
-					interfaces = 1;
-					wclear(menuwin);
-					refresh();
-					wrefresh(menuwin);
-                    attron(COLOR_PAIR(3));
-					printw("user and/or password incorrect(s)\n(press any key to go back)");
-                    attroff(COLOR_PAIR(3));
-					refresh();
-					getchar();
-					wclear(menuwin);
-					clear();
-					refresh();
+					interfaces = 12;
 				}
 			}
 		}
@@ -320,18 +366,7 @@ int main(){
                 Functionary * temp = new Functionary(tis[0], tis[1], tis[2], tis[3]);
                 f.push_back(*temp);
 				for(int i = 0; i < 200; ++i) fleg[i] = flag[i] = 1;
-                wclear(menuwin);
-                refresh();
-                wrefresh(menuwin);
-                attron(COLOR_PAIR(3));
-                printw("name: %s\nuser: %s\npass: %s\ntel: %s\n(press any key to go back)", tis[0].c_str(), tis[1].c_str(), tis[2].c_str(), tis[3].c_str());
-                attroff(COLOR_PAIR(3));
-                refresh();
-                getchar();
-                wclear(menuwin);
-                clear();
-                refresh();
-				interfaces = 1;
+				interfaces = 14;
 				ok = true;
 			}
 		}
@@ -366,18 +401,7 @@ int main(){
                 Client * cemp = new Client(tos[0], tos[1]);
                 c.push_back(*cemp);
 				for(int i = 0; i < 200; ++i) fleg[i] = flag[i] = 1;
-                wclear(menuwin);
-                refresh();
-                wrefresh(menuwin);
-                attron(COLOR_PAIR(3));
-                printw("name: %s\nuser: %s\n(press any key to go back)", tos[0].c_str(), tos[1].c_str());
-                attroff(COLOR_PAIR(3));
-                refresh();
-                getchar();
-                wclear(menuwin);
-                clear();
-                refresh();
-				interfaces = 5;
+				interfaces = 10;
 				ok = true;
 			}
 		}
@@ -392,18 +416,7 @@ int main(){
 			if(highlight == 1 && ok == false){
                 (orders.back()).observation = tos[0];
 				for(int i = 0; i < 200; ++i) fleg[i] = flag[i] = 1;
-                wclear(menuwin);
-                refresh();
-                wrefresh(menuwin);
-                attron(COLOR_PAIR(3));
-                printw("observation: %s\n(press any key to go back)", tos[0].c_str());
-                attroff(COLOR_PAIR(3));
-                refresh();
-                getchar();
-                wclear(menuwin);
-                clear();
-                refresh();
-				interfaces = 5;
+				interfaces = 11;
 				ok = true;
 			}
         }
@@ -418,18 +431,7 @@ int main(){
 			if(highlight == 1 && ok == false){
                 (orders.back()).observation = tos[0];
 				for(int i = 0; i < 200; ++i) fleg[i] = flag[i] = 1;
-                wclear(menuwin);
-                refresh();
-                wrefresh(menuwin);
-                attron(COLOR_PAIR(3));
-                printw("correct password\nplease take out the card\n");
-                attroff(COLOR_PAIR(3));
-                refresh();
-                getchar();
-                wclear(menuwin);
-                clear();
-                refresh();
-				interfaces = 9;
+				interfaces = 13;
 				ok = true;
 			}
         }
@@ -453,6 +455,10 @@ int main(){
                 if(interfaces > 5 && interfaces != 9) interfaces = 5;
             }
 		}
+
+        if((choice == 10) && choices[highlight] == "retry"){
+			interfaces = 1;
+		}
 		if((choice == 10) && choices[highlight] == "login"){
 			interfaces = 2;
 		}
@@ -471,8 +477,18 @@ int main(){
         if((choice == 10) && choices[highlight] == "credit card payment"){
             interfaces = 8;
         }
+        if((choice == 10) && choices[highlight] == "proceed"){
+            interfaces = 9;
+        }
         if((choice == 10) && choices[highlight] == "cash payment"){
             interfaces = 9;
+        }
+        if((choice == 10) && choices[highlight] == "register"){
+            interfaces = 1;
+        }
+        if((choice == 10) && choices[highlight] == "cancel"){
+            f.pop_back();
+            interfaces = 2;
         }
 	}
 	wclear(menuwin);
