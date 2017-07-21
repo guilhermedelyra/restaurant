@@ -69,8 +69,9 @@ void init_productstocks(vector<Product> & p, vector<Stock> & st){
 
 int main(){
     fstream outfili("users.txt", fstream::in | fstream::out | fstream::app);
-    ofstream ofs;
-    ofs.open ("users.txt", std::ofstream::out | std::ofstream::app);
+    ofstream func, client;
+    func.open ("users.txt", std:: ofstream::out | std:: ofstream::app);
+    client.open ("client.txt", std:: ofstream::out | std:: ofstream::app);
     vector<Client> c;
     vector<Functionary> f;
     vector<Product> p;
@@ -247,6 +248,7 @@ int main(){
                 if(flag[interfaces]){
                     highlight = 2;
                     choices.clear();
+                    client << c.back().name << " " << c.back().tel << endl;
                     choices.push_back("name: " + c.back().name);
                     choices.push_back("tel: " + c.back().tel);
                     choices.push_back("back");
@@ -492,7 +494,7 @@ int main(){
         }
         if((choice == 10) && choices[highlight] == "register"){
             interfaces = 1;
-            ofs << tis[1] << endl << tis[2] << endl;
+            func << tis[1] << endl << tis[2] << endl;
         }
         if((choice == 10) && choices[highlight] == "cancel"){
             f.pop_back();
@@ -507,7 +509,8 @@ int main(){
     attroff(COLOR_PAIR(3));
     refresh();
 	getchar();
-    ofs.close();
+    func.close();
+    client.close();
     outfili.close();
 	refresh();
 	endwin();

@@ -1,0 +1,9 @@
+name:"arroz carne feijao", price:15.00, id:1, quantity:50, min_amount:20
+name:"macarrao frango feijao", price:17.00, id:2, quantity:35, min_amount:10
+name:"stroggonof de carne", price:21.50, id:3, quantity:20, min_amount:5
+name:"coca cola", price:5.00, id:4, quantity:60, min_amount:25
+name:"sprite", price:5.00, id:5, quantity:20, min_amount:5
+name:"suco de limao", price:5.00, id:6, quantity:35, min_amount:10
+name:"suco de laranja", price:5.00, id:7, quantity:35, min_amount:10
+name:"pudim", price:8.50, id:8, quantity:10, min_amount:3
+name:"sorvete", price:4.99, id:9, quantity:15, min_amount:4
