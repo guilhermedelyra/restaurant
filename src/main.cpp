@@ -25,45 +25,25 @@ string getinput(){
 	return input;
 }
 
-void init_productstocks(vector<Product> & p, vector<Stock> & st){
-    int l = 1;
-    p.clear(); st.clear();
-
+void init_productstocks(vector<Product> & p){
+    p.clear();
     Product * p0 = new Product("arroz carne feijao", 15.00);
-    Stock * d0 = new Stock(l++, 50, 20);
-    st.push_back(*d0);
     p.push_back(*p0);
     Product * p1 = new Product("macarrao frango feijao", 17.00);
-    Stock * d1 = new Stock(l++, 35, 10);
-    st.push_back(*d1);
     p.push_back(*p1);
     Product * p2 = new Product("stroggonof de carne", 21.50);
-    Stock * d2 = new Stock(l++, 20, 5);
-    st.push_back(*d2);
     p.push_back(*p2);
     Product * p3 = new Product("coca cola", 5.00);
-    Stock * d3 = new Stock(l++, 60, 25);
-    st.push_back(*d3);
     p.push_back(*p3);
     Product * p4 = new Product("sprite", 5.00);
-    Stock * d4 = new Stock(l++, 20, 5);
-    st.push_back(*d4);
     p.push_back(*p4);
     Product * p5 = new Product("suco de limao", 5.00);
-    Stock * d5 = new Stock(l++, 35, 10);
-    st.push_back(*d5);
     p.push_back(*p5);
     Product * p6 = new Product("suco de laranja", 5.00);
-    Stock * d6 = new Stock(l++, 35, 10);
-    st.push_back(*d6);
     p.push_back(*p6);
     Product * p7 = new Product("pudim", 8.50);
-    Stock * d7 = new Stock(l++, 10, 3);
-    st.push_back(*d7);
     p.push_back(*p7);
     Product * p8 = new Product("sorvete", 4.99);
-    Stock * d8 = new Stock(l, 15, 4);
-    st.push_back(*d8);
     p.push_back(*p8);
 }
 
@@ -77,11 +57,20 @@ int main(){
     vector<Product> p;
     vector<Stock> st, cp_st;
     vector<Order> orders;
+    init_productstocks(p);
 
     Order * pedido = new Order(0, "", false);
     orders.push_back(* pedido);
 
-    init_productstocks(p, st);
+    ifstream filein("stock.txt");
+    ofstream fileout("temp.txt");
+    string ide, quantit, min_am, out = "";
+    while(getline(filein, ide)){
+        getline(filein, quantit);
+        getline(filein, min_am);
+        Stock * xd = new Stock(stoi(ide), stoi(quantit), stoi(min_am));
+        st.push_back(*xd);
+    }
 
     initscr();
     raw();
@@ -501,6 +490,10 @@ int main(){
             interfaces = 1;
         }
 	}
+    for(auto & v : st){
+        out += to_string(v.id)+"\n"+to_string(v.quantity)+"\n"+to_string(v.min_amount)+"\n";
+    }
+    fileout << out;
 	wclear(menuwin);
 	refresh();
 	wrefresh(menuwin);
@@ -512,6 +505,10 @@ int main(){
     func.close();
     client.close();
     outfili.close();
+    filein.close();
+    fileout.close();
+    remove("stock.txt");
+    rename("temp.txt", "stock.txt");
 	refresh();
 	endwin();
 	return 0;
