@@ -3,7 +3,7 @@
 
 #include "Product.hpp"
 
-class Stock : Order{
+class Stock {
     public:
         int id, quantity, min_amount;
         Stock(int id, int quantity, int min_amount);

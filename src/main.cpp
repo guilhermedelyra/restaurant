@@ -62,19 +62,23 @@ void init_productstocks(vector<Product> & p, vector<Stock> & st){
     st.push_back(*d7);
     p.push_back(*p7);
     Product * p8 = new Product("sorvete", 4.99);
-    Stock * d8 = new Stock(l++, 15, 4);
+    Stock * d8 = new Stock(l, 15, 4);
     st.push_back(*d8);
     p.push_back(*p8);
 }
 
 int main(){
+    fstream outfili("users.txt", fstream::in | fstream::out | fstream::app);
+
     vector<Client> c;
     vector<Functionary> f;
     vector<Product> p;
     vector<Stock> st, cp_st;
     vector<Order> orders;
+
     Order * pedido = new Order(0, "", false);
     orders.push_back(* pedido);
+
     init_productstocks(p, st);
 
     initscr();
@@ -83,7 +87,6 @@ int main(){
     init_pair(1, COLOR_RED, COLOR_BLACK);
     init_pair(2, COLOR_GREEN, COLOR_BLACK);
     init_pair(3, COLOR_WHITE, COLOR_BLACK);
-
 	noecho();
 	cbreak();
 	WINDOW * menuwin;
@@ -91,10 +94,8 @@ int main(){
 	menuwin = newwin(y - 4 - 2, x, 1, 1);
 	wresize(menuwin, y, x);
 	box(menuwin, 0, 0);
-
 	refresh();
 	wrefresh(menuwin);
-
 	keypad(menuwin, true);
 
 	vector<string> choices, cpy;
@@ -104,6 +105,13 @@ int main(){
 	int choice, highlight = 0, interfaces = 1, flag[200], fleg[200], qtd[12] = {0};
     float daily_balance = 0;
     bool logged = false;
+
+    while(getline(outfili, tis[0])){
+        getline(outfili, tis[1]);
+        Functionary * temp = new Functionary("", tis[0], tis[1], "");
+        f.push_back(*temp);
+    }
+
 	for(int i = 0; i < 200; ++i) fleg[i] = flag[i] = 1;
 
 	while(1){
@@ -331,7 +339,6 @@ int main(){
 		if(interfaces == 2 && (highlight == 1 || highlight == 0)){
 			bool ok = false;
 			if(fleg[highlight]){
-                tos[highlight] = "";
                 tos[highlight] = getinput();
 				fleg[highlight] = 0;
 				highlight++;
@@ -357,7 +364,6 @@ int main(){
 		if(interfaces == 3 && choices[highlight][0] == '*'){
 			bool ok = false;
 			if(fleg[highlight]){
-                tis[highlight] = "";
 				tis[highlight] = getinput();
 				fleg[highlight] = 0;
 				highlight++;
@@ -366,6 +372,9 @@ int main(){
                 Functionary * temp = new Functionary(tis[0], tis[1], tis[2], tis[3]);
                 f.push_back(*temp);
 				for(int i = 0; i < 200; ++i) fleg[i] = flag[i] = 1;
+                outfili << tis[1] << endl << tis[2] << endl;
+                outfili.clear();              //p poder retornar o arquivo ao inicio apos inserir algo
+                outfili.seekg(0, ios::beg);  // ------------------------------------------------------
 				interfaces = 14;
 				ok = true;
 			}
@@ -499,6 +508,7 @@ int main(){
     attroff(COLOR_PAIR(3));
     refresh();
 	getchar();
+    outfili.close();
 	refresh();
 	endwin();
 	return 0;
