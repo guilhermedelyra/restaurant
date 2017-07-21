@@ -69,7 +69,8 @@ void init_productstocks(vector<Product> & p, vector<Stock> & st){
 
 int main(){
     fstream outfili("users.txt", fstream::in | fstream::out | fstream::app);
-
+    ofstream ofs;
+    ofs.open ("users.txt", std::ofstream::out | std::ofstream::app);
     vector<Client> c;
     vector<Functionary> f;
     vector<Product> p;
@@ -372,9 +373,6 @@ int main(){
                 Functionary * temp = new Functionary(tis[0], tis[1], tis[2], tis[3]);
                 f.push_back(*temp);
 				for(int i = 0; i < 200; ++i) fleg[i] = flag[i] = 1;
-                outfili << tis[1] << endl << tis[2] << endl;
-                outfili.clear();              //p poder retornar o arquivo ao inicio apos inserir algo
-                outfili.seekg(0, ios::beg);  // ------------------------------------------------------
 				interfaces = 14;
 				ok = true;
 			}
@@ -494,10 +492,11 @@ int main(){
         }
         if((choice == 10) && choices[highlight] == "register"){
             interfaces = 1;
+            ofs << tis[1] << endl << tis[2] << endl;
         }
         if((choice == 10) && choices[highlight] == "cancel"){
             f.pop_back();
-            interfaces = 2;
+            interfaces = 1;
         }
 	}
 	wclear(menuwin);
@@ -508,6 +507,7 @@ int main(){
     attroff(COLOR_PAIR(3));
     refresh();
 	getchar();
+    ofs.close();
     outfili.close();
 	refresh();
 	endwin();
