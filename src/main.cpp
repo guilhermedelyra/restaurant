@@ -144,7 +144,6 @@ int main(){
 				if(flag[interfaces]){
 					highlight = 0;
 					choices.clear();
-                    logged = true;
                     choices.push_back("* name: ");
 					choices.push_back("* user: ");
 					choices.push_back("* pass: ");
@@ -160,6 +159,7 @@ int main(){
 				if(flag[interfaces]){
 					(orders.back()).totalvalue = 0;
 					highlight = 0;
+                    logged = true;
 					choices.clear();
                     choices.push_back(to_string(st[0].id) + ". " + p[0].name + "      (" + fto_string(p[0].price) + "$) [" + to_string(st[0].quantity) + "] x 0");
                     choices.push_back(to_string(st[1].id) + ". " + p[1].name + "  (" + fto_string(p[1].price) + "$) [" + to_string(st[1].quantity) + "] x 0");
