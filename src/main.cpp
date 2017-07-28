@@ -223,9 +223,10 @@ int main(){
                         choices.push_back(to_string(i+1) + ". " + orders.back().products_ordered[i].name + " (" + fto_string(orders.back().products_ordered[i].price) + "$) x " +
                         to_string(orders.back().qtd_ordered[i]) + " = " + fto_string(orders.back().qtd_ordered[i] * orders.back().products_ordered[i].price));
                     }
+                    auto cl = orders.back();
+                    choices.push_back("client: " + cl.client->name);
                     choices.push_back("total = " + fto_string((orders.back()).totalvalue));
                     choices.push_back("observation = " + (orders.back()).observation);
-                    choices.push_back("client: " + orders.back().client.name);
                     choices.push_back("\n");
                     choices.push_back("--- daily balance: " + fto_string(daily_balance) + " ---");
                     orders.push_back(* pedido);
@@ -241,8 +242,7 @@ int main(){
                     highlight = 2;
                     choices.clear();
                     client << c.back().name << " " << c.back().tel << endl;
-                    orders.back().client.name = c.back().name;
-                    orders.back().client.tel = c.back().tel;
+                    orders.back().client = &c.back();
                     choices.push_back("name: " + c.back().name);
                     choices.push_back("tel: " + c.back().tel);
                     choices.push_back("back");

@@ -1,6 +1,6 @@
 arroz carne feijao 15.00 20 49
 macarrao com queijo 17.00 10 34
-stroggonof de frango 21.50 5 19
+stroggonof de frango 21.50 5 16
 coca-cola 5.00 25 59
 sprite 5.00 5 19
 suco de limao 5.00 10 34
