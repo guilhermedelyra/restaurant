@@ -5,8 +5,8 @@
 
 class Stock {
     public:
-        int id, quantity, min_amount;
-        Stock(int id, int quantity, int min_amount);
+        map<Product, int> quantity;
+        Stock(Product p, int c);
 };
 
 #endif

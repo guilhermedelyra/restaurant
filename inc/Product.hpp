@@ -1,13 +1,17 @@
 #ifndef PRODUCT_HPP
 #define PRODUCT_HPP
-
-#include "Order.hpp"
+#include <bits/stdc++.h>
+using namespace std;
 
 class Product {
     public:
         string name;
         float price;
-        Product(string n, float p);
+        int min_amount;
+        Product(string n, float p, int m);
+        bool operator<(const Product& rhs) const {
+    		return name < rhs.name;
+    	}
 };
 
 #endif

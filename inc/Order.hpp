@@ -1,14 +1,17 @@
 #ifndef ORDER_HPP
 #define ORDER_HPP
-#include <bits/stdc++.h>
-using namespace std;
+#include "Product.hpp"
+#include "Person.hpp"
 
 class Order {
     public:
         float totalvalue;
         string observation;
-        bool ok = true;
-        Order(float t, string o, bool x);
+        bool ok = false;
+        vector<Product> products_ordered;
+        vector<int> qtd_ordered;
+        Client client;
+        Order();
 };
 
 #endif

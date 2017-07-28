@@ -2,49 +2,25 @@
 #include "Person.hpp"
 #include "Product.hpp"
 #include "Stock.hpp"
+#include "Order.hpp"
 
 string fto_string(float x){
     stringstream stream;
     stream << fixed << setprecision(2) << x;
     return stream.str();
 }
+
 string getinput(){
 	char ch = getch();
 	string input = "";
     if (ch != '\n') input += ch;
-	while (1){
+	while(1){
 		ch = getch();
-		if (ch == '\n'){
-			break;
-		}
-		if (ch >= 33 && ch <= 122){
-			input.push_back(ch);
-		}
+		if(ch == '\n') break;
+		if(ch >= 33 && ch <= 122) input += ch;
+        if(ch == '\b') input.pop_back();
 	}
-
 	return input;
-}
-
-void init_productstocks(vector<Product> & p){
-    p.clear();
-    Product * p0 = new Product("arroz carne feijao", 15.00);
-    p.push_back(*p0);
-    Product * p1 = new Product("macarrao frango feijao", 17.00);
-    p.push_back(*p1);
-    Product * p2 = new Product("stroggonof de carne", 21.50);
-    p.push_back(*p2);
-    Product * p3 = new Product("coca cola", 5.00);
-    p.push_back(*p3);
-    Product * p4 = new Product("sprite", 5.00);
-    p.push_back(*p4);
-    Product * p5 = new Product("suco de limao", 5.00);
-    p.push_back(*p5);
-    Product * p6 = new Product("suco de laranja", 5.00);
-    p.push_back(*p6);
-    Product * p7 = new Product("pudim", 8.50);
-    p.push_back(*p7);
-    Product * p8 = new Product("sorvete", 4.99);
-    p.push_back(*p8);
 }
 
 int main(){
@@ -57,18 +33,35 @@ int main(){
     vector<Product> p;
     vector<Stock> st, cp_st;
     vector<Order> orders;
-    init_productstocks(p);
 
-    Order * pedido = new Order(0, "", false);
+    Order * pedido = new Order();
     orders.push_back(* pedido);
 
     ifstream filein("stock.txt");
     ofstream fileout("temp.txt");
-    string ide, quantit, min_am, out = "";
-    while(getline(filein, ide)){
-        getline(filein, quantit);
-        getline(filein, min_am);
-        Stock * xd = new Stock(stoi(ide), stoi(quantit), stoi(min_am));
+    string read, out = "";
+    while(getline(filein, read)){
+        string nome = "";
+    	int quantidade = 0, min_amount = 0, power = 0, i = 0, k = read.length() - 1;
+        while(read[k - i] >= '0' && read[k - i] <= '9') quantidade += (read[k - i++] - '0') * pow(10, power++);
+        i++, power = 0;
+
+    	while(read[k - i] >= '0' && read[k - i] <= '9') min_amount += (read[k - i++] - '0') * pow(10, power++);
+     	float z = 0, t = 0;
+    	i++, power = 0;
+
+    	while(read[k - i] != '.') z += (read[k - i++] - '0') * pow(10, power++);
+    	z /= pow(10, power), i++, power = 0;
+
+    	while(read[k - i] >= '0' && read[k - i] <= '9') t += (read[k - i++] - '0') * pow(10, power++);
+    	t += z, i++;
+
+    	while((k-i) >= 0) nome += read[k - i++];
+
+    	reverse(nome.begin(), nome.end());
+        Product * pe = new Product(nome, t, min_amount);
+        p.push_back(*pe);
+        Stock * xd = new Stock(*pe, quantidade);
         st.push_back(*xd);
     }
 
@@ -150,15 +143,13 @@ int main(){
 					highlight = 0;
                     logged = true;
 					choices.clear();
-                    choices.push_back(to_string(st[0].id) + ". " + p[0].name + "      (" + fto_string(p[0].price) + "$) [" + to_string(st[0].quantity) + "] x 0");
-                    choices.push_back(to_string(st[1].id) + ". " + p[1].name + "  (" + fto_string(p[1].price) + "$) [" + to_string(st[1].quantity) + "] x 0");
-                    choices.push_back(to_string(st[2].id) + ". " + p[2].name + "     (" + fto_string(p[2].price) + "$) [" + to_string(st[2].quantity) + "] x 0");
-                    choices.push_back(to_string(st[3].id) + ". " + p[3].name + "               (" + fto_string(p[3].price) + "$)  [" + to_string(st[3].quantity) + "] x 0");
-                    choices.push_back(to_string(st[4].id) + ". " + p[4].name + "                  (" + fto_string(p[4].price) + "$)  [" + to_string(st[4].quantity) + "] x 0");
-                    choices.push_back(to_string(st[5].id) + ". " + p[5].name + "           (" + fto_string(p[5].price) + "$)  [" + to_string(st[5].quantity) + "] x 0");
-                    choices.push_back(to_string(st[6].id) + ". " + p[6].name + "         (" + fto_string(p[6].price) + "$)  [" + to_string(st[6].quantity) + "] x 0");
-                    choices.push_back(to_string(st[7].id) + ". " + p[7].name + "                   (" + fto_string(p[7].price) + "$)  [" + to_string(st[7].quantity) + "] x 0");
-                    choices.push_back(to_string(st[8].id) + ". " + p[8].name + "                 (" + fto_string(p[8].price) + "$)  [" + to_string(st[8].quantity) + "] x 0");
+
+                    for(int i = 0; i < 9; ++i){
+                        string s1(27 - (3+(p[i].name).length()), ' ');
+                        string fto = fto_string(p[i].price), s2(6 - fto.length(), ' ');
+                        choices.push_back(to_string(i+1) + ". " + p[i].name + s1 + "(" + fto + "$)" + s2 + "[" + to_string(st[i].quantity[p[i]]) + "] x 0");
+                    }
+
 					choices.push_back("\n");
 					choices.push_back("close order");
                     choices.push_back("back");
@@ -220,10 +211,21 @@ int main(){
                     highlight = 6;
                     choices.clear();
                     (orders.back()).ok = true;
+                    for(int i = 0; i < 9; ++i){
+                        if(st[i].quantity[p[i]] != cp_st[i].quantity[p[i]]){
+                            orders.back().products_ordered.push_back(p[i]);
+                            orders.back().qtd_ordered.push_back(cp_st[i].quantity[p[i]] - st[i].quantity[p[i]]);
+                        }
+                    }
                     daily_balance += (orders.back()).totalvalue;
                     choices.push_back("order closed!");
+                    for(int i = 0; i < (int)orders.back().products_ordered.size(); ++i){
+                        choices.push_back(to_string(i+1) + ". " + orders.back().products_ordered[i].name + " (" + fto_string(orders.back().products_ordered[i].price) + "$) x " +
+                        to_string(orders.back().qtd_ordered[i]) + " = " + fto_string(orders.back().qtd_ordered[i] * orders.back().products_ordered[i].price));
+                    }
                     choices.push_back("total = " + fto_string((orders.back()).totalvalue));
                     choices.push_back("observation = " + (orders.back()).observation);
+                    choices.push_back("client: " + orders.back().client.name);
                     choices.push_back("\n");
                     choices.push_back("--- daily balance: " + fto_string(daily_balance) + " ---");
                     orders.push_back(* pedido);
@@ -238,6 +240,8 @@ int main(){
                     highlight = 2;
                     choices.clear();
                     client << c.back().name << " " << c.back().tel << endl;
+                    orders.back().client.name = c.back().name;
+                    orders.back().client.tel = c.back().tel;
                     choices.push_back("name: " + c.back().name);
                     choices.push_back("tel: " + c.back().tel);
                     choices.push_back("back");
@@ -279,8 +283,8 @@ int main(){
                     highlight = 5;
                     choices.clear();
                     choices.push_back("name: " + f.back().name);
-                    choices.push_back("user: " + f.back().employee.first);
-                    choices.push_back("password: " + f.back().employee.second);
+                    choices.push_back("user: " + f.back().user_pass.first);
+                    choices.push_back("password: " + f.back().user_pass.second);
                     choices.push_back("tel: " + f.back().tel);
                     choices.push_back("\n");
                     choices.push_back("register");
@@ -300,7 +304,7 @@ int main(){
 			if(i == highlight) wattron(menuwin, A_REVERSE);
             if(interfaces == 4){
                 if(i < 9){
-                    if(st[i].quantity <= st[i].min_amount) wattron(menuwin, COLOR_PAIR(1));
+                    if(st[i].quantity[p[i]] <= p[i].min_amount) wattron(menuwin, COLOR_PAIR(1));
                     else wattron(menuwin, COLOR_PAIR(2));
                 }
             }
@@ -308,7 +312,7 @@ int main(){
 			wattroff(menuwin, A_REVERSE);
             if(interfaces == 4){
                 if(i < 9){
-                    if(st[i].quantity <= st[i].min_amount) wattroff(menuwin, COLOR_PAIR(1));
+                    if(st[i].quantity[p[i]] <= p[i].min_amount) wattroff(menuwin, COLOR_PAIR(1));
                     else wattroff(menuwin, COLOR_PAIR(2));
                 }
             }
@@ -332,15 +336,14 @@ int main(){
 			bool ok = false;
 			if(fleg[highlight]){
                 tos[highlight] = getinput();
-				fleg[highlight] = 0;
-				highlight++;
+				fleg[highlight++] = 0;
 			}
 			if(highlight == 2 && ok == false){
 				tmp = make_pair(tos[0], tos[1]);
 				ok = true;
                 bool fleger = false;
 				for(int i = 0; i < (int)f.size(); ++i){
-                    if(f[i].employee.first == tmp.first && f[i].employee.second == tmp.second) fleger = true;
+                    if(f[i].user_pass.first == tmp.first && f[i].user_pass.second == tmp.second) fleger = true;
                 }
 			    if(fleger){
 					interfaces = 4;
@@ -357,8 +360,7 @@ int main(){
 			bool ok = false;
 			if(fleg[highlight]){
 				tis[highlight] = getinput();
-				fleg[highlight] = 0;
-				highlight++;
+				fleg[highlight++] = 0;
 			}
 			if(highlight == 4 && ok == false){
                 Functionary * temp = new Functionary(tis[0], tis[1], tis[2], tis[3]);
@@ -370,30 +372,28 @@ int main(){
 		}
 
 		if((choice == '\n') && interfaces == 4 && (choices[highlight][0] - '0' >= 0 && choices[highlight][0] - '0' <= 9)){
-			if(st[highlight].quantity > 0){
+			if(st[highlight].quantity[p[highlight]] > 0){
                 (orders.back()).totalvalue += p[highlight].price;
                 qtd[highlight]++;
-                st[highlight].quantity--;
+                st[highlight].quantity[p[highlight]]--;
             }
 			choices.back() = "                               total = " + fto_string((orders.back()).totalvalue) + "$";
-			choices[highlight] = (cpy[highlight].substr(0, cpy[highlight].size()-7)) + to_string(st[highlight].quantity) + "] x " + to_string(qtd[highlight]);
+			choices[highlight] = (cpy[highlight].substr(0, cpy[highlight].size()-7)) + to_string(st[highlight].quantity[p[highlight]]) + "] x " + to_string(qtd[highlight]);
 		}
 		if((choice == 'R' || choice == 'r') && interfaces == 4 && (choices[highlight][0] - '0' >= 0 && choices[highlight][0] - '0' <= 9)){
 			if(qtd[highlight] - 1 >= 0){
                 qtd[highlight]--;
-                st[highlight].quantity++;
+                st[highlight].quantity[p[highlight]]++;
                 (orders.back()).totalvalue -= p[highlight].price;
             }
 			choices.back() = "                               total = " + fto_string((orders.back()).totalvalue) + "$";
-            choices[highlight] = (cpy[highlight].substr(0, cpy[highlight].size()-7)) + to_string(st[highlight].quantity) + "] x " + to_string(qtd[highlight]);
+            choices[highlight] = (cpy[highlight].substr(0, cpy[highlight].size()-7)) + to_string(st[highlight].quantity[p[highlight]]) + "] x " + to_string(qtd[highlight]);
 		}
         if(interfaces == 6 && choices[highlight][0] == '*'){
 			bool ok = false;
 			if(fleg[highlight]){
-                tos[highlight] = "";
 				tos[highlight] = getinput();
-				fleg[highlight] = 0;
-				highlight++;
+				fleg[highlight++] = 0;
 			}
 			if(highlight >= 2 && ok == false){
                 Client * cemp = new Client(tos[0], tos[1]);
@@ -406,10 +406,8 @@ int main(){
         if(interfaces == 7 && choices[highlight][0] == '*'){
             bool ok = false;
 			if(fleg[highlight]){
-                tos[highlight] = "";
                 tos[highlight] = getinput();
-				fleg[highlight] = 0;
-				highlight++;
+				fleg[highlight++] = 0;
 			}
 			if(highlight == 1 && ok == false){
                 (orders.back()).observation = tos[0];
@@ -454,33 +452,15 @@ int main(){
             }
 		}
 
-        if((choice == 10) && choices[highlight] == "retry"){
-			interfaces = 1;
-		}
-		if((choice == 10) && choices[highlight] == "login"){
-			interfaces = 2;
-		}
-        if((choice == 10) && choices[highlight] == "register employee"){
-			interfaces = 3;
-		}
-        if((choice == 10) && choices[highlight] == "close order"){
-			interfaces = 5;
-		}
-        if((choice == 10) && choices[highlight] == "register client"){
-			interfaces = 6;
-		}
-        if((choice == 10) && choices[highlight] == "add observation"){
-			interfaces = 7;
-		}
-        if((choice == 10) && choices[highlight] == "credit card payment"){
-            interfaces = 8;
-        }
-        if((choice == 10) && choices[highlight] == "proceed"){
-            interfaces = 9;
-        }
-        if((choice == 10) && choices[highlight] == "cash payment"){
-            interfaces = 9;
-        }
+        if((choice == 10) && choices[highlight] == "retry")  interfaces = 1;
+		if((choice == 10) && choices[highlight] == "login")  interfaces = 2;
+        if((choice == 10) && choices[highlight] == "register employee")  interfaces = 3;
+        if((choice == 10) && choices[highlight] == "close order")  interfaces = 5;
+        if((choice == 10) && choices[highlight] == "register client")  interfaces = 6;
+        if((choice == 10) && choices[highlight] == "add observation")  interfaces = 7;
+        if((choice == 10) && choices[highlight] == "credit card payment")  interfaces = 8;
+        if((choice == 10) && choices[highlight] == "proceed")  interfaces = 9;
+        if((choice == 10) && choices[highlight] == "cash payment")  interfaces = 9;
         if((choice == 10) && choices[highlight] == "register"){
             interfaces = 1;
             func << tis[1] << endl << tis[2] << endl;
@@ -490,8 +470,8 @@ int main(){
             interfaces = 1;
         }
 	}
-    for(auto & v : st){
-        out += to_string(v.id)+"\n"+to_string(v.quantity)+"\n"+to_string(v.min_amount)+"\n";
+    for(int i = 0; i < 9; ++i){
+        out += p[i].name + " " + fto_string(p[i].price) + " " + to_string(p[i].min_amount) + " " + to_string(st[i].quantity[p[i]]) + "\n";
     }
     fileout << out;
 	wclear(menuwin);

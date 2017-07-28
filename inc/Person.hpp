@@ -1,6 +1,7 @@
 #ifndef PERSON_HPP
 #define PERSON_HPP
-#include "Order.hpp"
+#include <bits/stdc++.h>
+using namespace std;
 
 class Person{
     public:
@@ -14,7 +15,7 @@ class Client : public Person{
 
 class Functionary : public Person{
     public:
-        pair<string, string> employee;
+        pair<string, string> user_pass;
         Functionary(string n, string u, string p, string t);
 };
 
