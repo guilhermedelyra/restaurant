@@ -5,7 +5,7 @@
 
 class Stock {
     public:
-        map<Product, int> quantity;
+        std::map<Product, int> quantity;
         Stock(Product p, int c);
 };
 

@@ -6,11 +6,11 @@
 class Order {
     public:
         float totalvalue;
-        string observation;
+        std::string observation;
         bool ok = false;
-        vector<Product> products_ordered;
-        vector<int> qtd_ordered;
-        Client client;
+        std::vector<Product> products_ordered;
+        std::vector<int> qtd_ordered;
+        Client *client;
         Order();
 };
 

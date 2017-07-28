@@ -1,11 +1,11 @@
 #include "Person.hpp"
 
-Client::Client(string n, string t){
+Client::Client(std::string n, std::string t){
     this->name = n;
     this->tel = t;
 }
 
-Functionary::Functionary(string n, string u, string p, string t){
+Functionary::Functionary(std::string n, std::string u, std::string p, std::string t){
     this->name = n;
     this->user_pass = make_pair(u, p);
     this->tel = t;

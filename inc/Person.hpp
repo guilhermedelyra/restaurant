@@ -1,22 +1,21 @@
 #ifndef PERSON_HPP
 #define PERSON_HPP
 #include <bits/stdc++.h>
-using namespace std;
 
 class Person{
     public:
-        string name, tel;
+        std::string name, tel;
 };
 
 class Client : public Person{
     public:
-        Client(string n, string t);
+        Client(std::string n, std::string t);
 };
 
 class Functionary : public Person{
     public:
-        pair<string, string> user_pass;
-        Functionary(string n, string u, string p, string t);
+        std::pair<std::string, std::string> user_pass;
+        Functionary(std::string n, std::string u, std::string p, std::string t);
 };
 
 #endif

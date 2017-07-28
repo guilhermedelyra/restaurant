@@ -231,7 +231,7 @@ int main(){
                     choices.push_back("\n");
                     choices.push_back("back");
                     choices.push_back("exit");
-                    highlight = 6 + (int)orders.back().products_ordered.size();
+                    highlight = 6 + orders.back().products_ordered.size();
                     flag[interfaces] = 0;
                 }
                 break;
