@@ -11,7 +11,7 @@ class Order {
         vector<Product> products_ordered;
         vector<int> qtd_ordered;
         Client client;
-        Order(){};
+        Order();
 };
 
 #endif
