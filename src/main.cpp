@@ -3,6 +3,7 @@
 #include "Product.hpp"
 #include "Stock.hpp"
 #include "Order.hpp"
+
 using namespace std;
 
 string fto_string(float x){
