@@ -1,9 +1,9 @@
-arroz carne feijao 15.00 20 49
-macarrao com queijo 17.00 10 34
-stroggonof de frango 21.50 5 5
-coca-cola 5.00 25 59
-sprite 5.00 5 19
-suco de limao 5.00 10 34
-suco de laranja 5.00 10 34
-pudim 8.50 3 9
-sorvete 4.99 4 14
+arroz carne feijao 15.00 20 50
+macarrao com queijo 17.00 10 35
+stroggonof de frango 21.50 5 35
+coca-cola 5.00 25 60
+sprite 5.00 5 20
+suco de limao 5.00 10 35
+suco de laranja 5.00 10 35
+pudim 8.50 3 10
+sorvete 4.99 4 15
